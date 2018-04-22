@@ -11,6 +11,7 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 void print_board() {
+    system("clear");
     int i, j;
     printf("\n");
     for (j = 7; j >= 0; j--) {
@@ -32,6 +33,10 @@ void print_board() {
     for (i = 0; i <= 7; i++)
         printf("%c  ", i + 'a');
     printf("\n\n");
+    if (game.move == my_color)
+        printf("Your turn!\n");
+    else
+        printf("Waiting for opponent...");
 }
 
 int main() {

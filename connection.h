@@ -78,6 +78,7 @@ int connect_as_client() {
 
     // Convert IPv4 and IPv6 addresses from text to binary form
     char serv_addr_str[200];
+    printf("Enter server adress: ");
     scanf("%s", serv_addr_str);
     if(inet_pton(AF_INET, serv_addr_str, &serv_addr.sin_addr)<=0)
     {
