@@ -55,6 +55,10 @@ int main() {
                 printf("White wins!");
             start_new_game();
         }
+        if (is_stalemate()) {
+            printf("Stalemate!");
+            start_new_game();
+        }
     }
     return 0;
 }

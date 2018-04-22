@@ -463,4 +463,18 @@ int is_mate() {
     }
     return 0;
 }
+
+int is_stalemate() {
+    if (!is_check(game.move)) {
+        int x1, y1, x2, y2;
+        for (x1 = 0; x1 < 8; x1++)
+            for (y1 = 0; y1 < 8; y1++)
+                for (x2 = 0; x2 < 8; x2++)
+                    for (y2 = 0; y2 < 8; y2++)
+                        if (is_move_possible(x1, y1, x2, y2))
+                            return 0;
+        return 1;
+    }
+    return 0;
+}
 #endif //CHESSGAME_ENGINE_H
