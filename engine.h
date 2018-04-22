@@ -19,6 +19,7 @@ typedef struct {
 } ChessPosition;
 
 ChessGame game;
+int my_color;
 
 void fill_board() {
     int i, j;
@@ -476,5 +477,60 @@ int is_stalemate() {
         return 1;
     }
     return 0;
+}
+
+char position[2000] = {0};
+
+char* make_position() {
+    int t = 0, i, j;
+    position[t] = 'p';
+    t++;
+    for (i = 0; i <= 7; i++)
+        for (j = 0; j <= 7; j++) {
+            position[t] = (char)('0' + game.board.pieces[i][j]);
+            t++;
+            position[t] = (char)('0' + game.board.colors[i][j]);
+            t++;
+        }
+    position[t] = (char)('0' + game.move);
+    t++;
+    position[t] = (char)('0' + game.en_passant);
+    t++;
+    position[t] = (char)('0' + game.en_passant_x);
+    t++;
+    position[t] = (char)('0' + game.white000);
+    t++;
+    position[t] = (char)('0' + game.white00);
+    t++;
+    position[t] = (char)('0' + game.black000);
+    t++;
+    position[t] = (char)('0' + game.black00);
+    t++;
+    position[t] = 0;
+    return position;
+}
+
+void read_position(char* pos) {
+    int t = 1, i, j;
+    for (i = 0; i <= 7; i++)
+        for (j = 0; j <= 7; j++) {
+            game.board.pieces[i][j] = pos[t] - '0';
+            t++;
+            game.board.colors[i][j] = pos[t] - '0';
+            t++;
+        }
+    game.move = pos[t] - '0';
+    t++;
+    game.en_passant = pos[t] - '0';
+    t++;
+    game.en_passant_x = pos[t] - '0';
+    t++;
+    game.white000 = pos[t] - '0';
+    t++;
+    game.white00 = pos[t] - '0';
+    t++;
+    game.black000 = pos[t] - '0';
+    t++;
+    game.black00 = pos[t] - '0';
 }
 #endif //CHESSGAME_ENGINE_H

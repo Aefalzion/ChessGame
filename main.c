@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <conio.h>
 #include "engine.h"
+#include "connection.h"
 #include <stdlib.h>
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -35,29 +35,57 @@ void print_board() {
 }
 
 int main() {
+    my_connect();
     start_new_game();
+
+    char str[1000];
+
+    if (connection_type == 1) {
+        printf("Select your colour(b/w): ");
+        scanf("%s", str);
+        if (str[0] == 'b') {
+            my_color = 2;
+        } else my_color = 1;
+        if (my_color == 1) {
+            my_send("2");
+        } else my_send("1");
+        start_new_game();
+    }
+
+    if (connection_type == 2) {
+        my_receive();
+        if (buffer[0] == '1')
+            my_color = 1;
+        else
+            my_color = 2;
+        start_new_game();
+    }
+
     int x1, x2, y1, y2;
-    char str[10];
     while (1) {
         print_board();
-        scanf("%s", str);
-        if (make_str_move(str)) {
-            printf("1\n");
+
+        if (game.move == my_color) {
+            scanf("%s", str);
+            make_str_move(str);
+            make_position();
+            my_send(position);
         } else {
-            printf("0\n");
+            my_receive();
+            read_position(buffer);
         }
-        system("cls");
+
         if (is_mate()) {
             printf("Mate! ");
             if (game.move == 1)
                 printf("Black wins!");
             else
                 printf("White wins!");
-            start_new_game();
+            return 0;
         }
         if (is_stalemate()) {
             printf("Stalemate!");
-            start_new_game();
+            return 0;
         }
     }
     return 0;

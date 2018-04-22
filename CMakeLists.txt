@@ -3,5 +3,5 @@ project(ChessGame)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES main.c engine.h)
+set(SOURCE_FILES main.c engine.h connection.h)
 add_executable(ChessGame ${SOURCE_FILES})
