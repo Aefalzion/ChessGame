@@ -55,6 +55,8 @@ int main() {
             my_send("2");
         } else my_send("1");
         start_new_game();
+        make_position();
+	my_send(position);
     }
 
     if (connection_type == 2) {
@@ -64,6 +66,10 @@ int main() {
         else
             my_color = 2;
         start_new_game();
+    }
+
+    if (connection_type == 3){
+        my_receive();
     }
 
     int x1, x2, y1, y2;
@@ -78,19 +84,24 @@ int main() {
         } else {
             my_receive();
             read_position(buffer);
+	    if(connection_type == 1)
+		my_send(buffer); 
         }
-
-        if (is_mate()) {
-            printf("Mate! ");
-            if (game.move == 1)
-                printf("Black wins!");
-            else
-                printf("White wins!");
-            return 0;
-        }
-        if (is_stalemate()) {
-            printf("Stalemate!");
-            return 0;
+	
+        if (connection_type != 3) {
+        	
+            if (is_mate()) {
+                printf("Mate! ");
+                if (game.move == 1)
+                    printf("Black wins!");
+                else
+                    printf("White wins!");
+                return 0;
+            }
+            if (is_stalemate()) {
+                printf("Stalemate!");
+                return 0;
+            }
         }
     }
     return 0;

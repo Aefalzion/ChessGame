@@ -10,7 +10,8 @@
 
 int connection_type; //1 - server; 2 - client
 
-int server_fd, new_socket, valread;
+int server_fd, new_socket, view_sock;
+int viewers = 0;
 struct sockaddr_in address;
 int opt = 1;
 int addrlen = sizeof(address);
@@ -18,6 +19,7 @@ char buffer[10000] = {0};
 
 int sock = 0, valread;
 struct sockaddr_in serv_addr;
+
 
 int connect_as_server() {
     // Creating socket file descriptor
@@ -59,6 +61,21 @@ int connect_as_server() {
         exit(EXIT_FAILURE);
     }
     printf("Successfully connected!\n");
+    
+    char temp[100];
+    printf("Are any viewers expected? (y/n):\n");
+    scanf("%s", &temp);
+    if( (temp[0] == 'y') || (temp[0] == 'Y'))
+    {
+        printf("Waiting for connection...\n");
+        if ((view_sock = accept(server_fd, (struct sockaddr *)&address,(socklen_t*)&addrlen))<0)
+        {
+            perror("accept_viewer");
+            exit(EXIT_FAILURE);
+        }
+        viewers = 1;
+        printf("Successfully connected!\n");
+    }
     return 0;
 }
 
@@ -95,6 +112,39 @@ int connect_as_client() {
     return 0;
 }
 
+int connect_as_viewer() {
+    connection_type = 3;
+    char buffer[1024] = {0};
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+
+    memset(&serv_addr, '0', sizeof(serv_addr));
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    char serv_addr_str[200];
+    printf("Enter server adress: ");
+    scanf("%s", serv_addr_str);
+    if(inet_pton(AF_INET, serv_addr_str, &serv_addr.sin_addr)<=0)
+    {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+    printf("Successfully connected!");
+    return 0;
+}
+
+
 int send_as_client(char* s) {
     send(sock, s, strlen(s), 0);
     return 0;
@@ -102,6 +152,8 @@ int send_as_client(char* s) {
 
 int send_as_server(char* s) {
     send(new_socket, s, strlen(s), 0);
+    if( viewers > 0)
+        send(view_sock, s, strlen(s), 0);   
     return 0;
 }
 
@@ -121,20 +173,30 @@ char* receive_as_client() {
     return buffer;
 }
 
+char* receive_as_viewer() {
+    valread = read( sock , buffer, 1024);
+    return buffer;
+}
+
 char* my_receive() {
     if (connection_type == 1)
         return receive_as_server();
-    return receive_as_client();
+    if (connection_type == 2)
+        return receive_as_client();
+    return receive_as_viewer();
 }
 
 int my_connect() {
     char s[200];
-    printf("Enter type of connection(c/s): ");
+    printf("Enter type of connection(c/s/v): ");
     scanf("%s", s);
     if (s[0] == 's' || s[0] == 'S')
         return connect_as_server();
     if (s[0] == 'c' || s[0] == 'C')
         return connect_as_client();
+    if (s[0] == 'v' || s[0] == 'V')
+        return connect_as_viewer();
+    return 1;
 }
 
 

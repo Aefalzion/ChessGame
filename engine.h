@@ -1,5 +1,6 @@
 #ifndef CHESSGAME_ENGINE_H
 #define CHESSGAME_ENGINE_H
+#include <stdio.h>
 
 typedef struct {
     int pieces[8][8]; //0-empty, 1-pawn, 2-knight, 3-bishop, 4-rook, 5-queen, 6-king
@@ -19,7 +20,7 @@ typedef struct {
 } ChessPosition;
 
 ChessGame game;
-int my_color;
+int my_color = 0;
 
 void fill_board() {
     int i, j;
