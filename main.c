@@ -85,7 +85,7 @@ int main() {
         } else my_send("1");
         start_new_game();
         make_position();
-	my_send(position);
+	send_to_viewer(position);
     }
 
     if (connection_type == 2) {
@@ -112,11 +112,13 @@ int main() {
             make_str_move(str);
             make_position();
             my_send(position);
+   	    if(connection_type == 1)
+  		send_to_viewer(position);
         } else {
             my_receive();
             read_position(buffer);
 	    if(connection_type == 1)
-		my_send(buffer); 
+		send_to_viewer(buffer); 
         }
 	
         if (connection_type != 3) {

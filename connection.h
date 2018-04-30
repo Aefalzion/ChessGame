@@ -152,6 +152,10 @@ int send_as_client(char* s) {
 
 int send_as_server(char* s) {
     send(new_socket, s, strlen(s), 0);
+    return 0;
+}
+
+int send_to_viewer(char* s) {
     if( viewers > 0)
         send(view_sock, s, strlen(s), 0);   
     return 0;
