@@ -10,7 +10,7 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-void print_board() {
+void print_board_1() {
     system("clear");
     int i, j;
     printf("\n");
@@ -36,7 +36,36 @@ void print_board() {
     if (game.move == my_color)
         printf("Your turn!\n");
     else
-        printf("Waiting for opponent...");
+        printf("Waiting for opponent...\n");
+}
+
+void print_board_2() {
+    system("clear");
+    int i, j;
+    printf("\n");
+    for (j = 0; j <= 7; j++) {
+        printf("%d ", j + 1);
+        for (i = 7; i >= 0; i--) {
+            if (game.board.pieces[i][j] == 0)
+                printf("--");
+            else {
+                if (game.board.colors[i][j] == 1)
+                    printf(   "w%d"   , game.board.pieces[i][j]);
+                else
+                    printf(   "b%d"   , game.board.pieces[i][j]);
+            }
+            printf(" ");
+        }
+        printf("\n\n");
+    }
+    printf("  ");
+    for (i = 7; i >= 0; i--)
+        printf("%c  ", i + 'a');
+    printf("\n\n");
+    if (game.move == my_color)
+        printf("Your turn!\n");
+    else
+        printf("Waiting for opponent...\n");
 }
 
 int main() {
@@ -74,8 +103,10 @@ int main() {
 
     int x1, x2, y1, y2;
     while (1) {
-        print_board();
-
+        if (my_color == 1)
+            print_board_1();
+        else
+            print_board_2();
         if (game.move == my_color) {
             scanf("%s", str);
             make_str_move(str);
